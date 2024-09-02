@@ -17,7 +17,7 @@
     </style>
   </head>
   <body>
-    <h1>Interactive Chat with AI</h1>
+    <h1>BIS 3D</h1>
     <form id="chatForm">
       <label for="message">Your Message:</label><br />
       <input type="text" id="message" name="message" required /><br /><br />
@@ -69,20 +69,19 @@
         });
 
       function formatResponse(content) {
-        // Replace "**" with bold tags and create line breaks for better readability
         const formattedContent = content
           .replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>") // Bold
           .replace(/\n/g, "<br>"); // Line breaks
 
-        // Inject options for user to choose
+        // Inject options for user to choose with descriptive action styles
         const optionsHtml = `
                 <form id="decisionForm">
                     <p><strong>Decision Making Options:</strong></p>
-                    <label><input type="radio" name="decision" value="1"> Question Dr. Ram about his certification process for IS 15700-2014.</label><br>
-                    <label><input type="radio" name="decision" value="2"> Investigate the IT department to see if they can find any evidence of data leaks or tampering.</label><br>
-                    <label><input type="radio" name="decision" value="3"> Speak with Rasheek, who might have information about the standard's last known whereabouts.</label><br>
-                    <label><input type="radio" name="decision" value="4"> Review the audit reports from the last few months for any inconsistencies or signs of foul play.</label><br>
-                    <label><input type="radio" name="decision" value="5"> Pay a visit to Tarush, the journalist, and see if he has any leads on the missing standard.</label><br><br>
+                    <label><input type="radio" name="decision" value="Question Dr. Ram about his certification process for IS 15700-2014. [Thrilling or suspenseful action option for Vikram]"> Question Dr. Ram about his certification process for IS 15700-2014. [Thrilling or suspenseful action option for Vikram]</label><br>
+                    <label><input type="radio" name="decision" value="Investigate the IT department to see if they can find any evidence of data leaks or tampering. [Intriguing or mysterious action option for Vikram]"> Investigate the IT department to see if they can find any evidence of data leaks or tampering. [Intriguing or mysterious action option for Vikram]</label><br>
+                    <label><input type="radio" name="decision" value="Speak with Rasheek, who might have information about the standard's last known whereabouts. [Investigative or analytical action option for Vikram]"> Speak with Rasheek, who might have information about the standard's last known whereabouts. [Investigative or analytical action option for Vikram]</label><br>
+                    <label><input type="radio" name="decision" value="Review the audit reports from the last few months for any inconsistencies or signs of foul play. [Risky or daring action option for Vikram]"> Review the audit reports from the last few months for any inconsistencies or signs of foul play. [Risky or daring action option for Vikram]</label><br>
+                    <label><input type="radio" name="decision" value="Pay a visit to Tarush, the journalist, and see if he has any leads on the missing standard. [Unexpected or creative action option for Vikram]"> Pay a visit to Tarush, the journalist, and see if he has any leads on the missing standard. [Unexpected or creative action option for Vikram]</label><br><br>
                     <button type="submit">Submit Decision</button>
                 </form>
             `;
@@ -97,12 +96,11 @@
           const selectedOption = document.querySelector(
             'input[name="decision"]:checked'
           ).value;
-          const decisionMessage = `You chose option ${selectedOption}.`;
 
           const requestData = {
             model:
               "lmstudio-community/Meta-Llama-3.1-8B-Instruct-GGUF/Meta-Llama-3.1-8B-Instruct-Q4_K_M.gguf",
-            messages: [{ role: "user", content: decisionMessage }],
+            messages: [{ role: "user", content: selectedOption }],
             temperature: 0.7,
             max_tokens: -1,
             stream: false,
