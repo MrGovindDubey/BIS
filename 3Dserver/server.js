@@ -1,6 +1,7 @@
 const express = require('express');
 const axios = require('axios');
 const path = require('path');
+const cors = require('cors'); // Import the cors package
 
 const app = express();
 const port = 3000;
@@ -13,6 +14,11 @@ app.set('views', path.join(__dirname, 'views'));
 
 // Middleware to parse JSON bodies
 app.use(express.json());
+
+// CORS configuration
+app.use(cors({
+    origin: '*' // Allow requests from this origin
+}));
 
 // Define a GET route for the front page
 app.get('/', (req, res) => {
