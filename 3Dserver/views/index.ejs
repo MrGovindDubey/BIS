@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Interactive Chat with AI</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        margin: 20px;
+      }
+      #response {
+        margin-top: 20px;
+        padding: 10px;
+        border: 1px solid #ccc;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Interactive Chat with AI</h1>
+    <form id="chatForm">
+      <label for="message">Your Message:</label><br />
+      <input type="text" id="message" name="message" required /><br /><br />
+      <button type="submit">Send</button>
+    </form>
+    <div id="response"></div>
+
+    <script>
+      document
+        .getElementById("chatForm")
+        .addEventListener("submit", async function (event) {
+          event.preventDefault();
+
+          const message = document.getElementById("message").value;
+
+          const requestData = {
+            model:
+              "lmstudio-community/Meta-Llama-3.1-8B-Instruct-GGUF/Meta-Llama-3.1-8B-Instruct-Q4_K_M.gguf",
+            messages: [{ role: "user", content: message }],
+            temperature: 0.7,
+            max_tokens: -1,
+            stream: false,
+          };
+
+          try {
+            const response = await fetch("/v1/chat/completions", {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify(requestData),
+            });
+
+            const data = await response.json();
+
+            if (response.ok) {
+              const formattedResponse = formatResponse(
+                data.choices[0].message.content
+              );
+              document.getElementById("response").innerHTML = formattedResponse;
+            } else {
+              document.getElementById("response").textContent =
+                "Error: " + data.error;
+            }
+          } catch (error) {
+            document.getElementById("response").textContent =
+              "Error: " + error.message;
+          }
+        });
+
+      function formatResponse(content) {
+        // Replace "**" with bold tags and create line breaks for better readability
+        const formattedContent = content
+          .replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>") // Bold
+          .replace(/\n/g, "<br>"); // Line breaks
+
+        // Inject options for user to choose
+        const optionsHtml = `
+                <form id="decisionForm">
+                    <p><strong>Decision Making Options:</strong></p>
+                    <label><input type="radio" name="decision" value="1"> Question Dr. Ram about his certification process for IS 15700-2014.</label><br>
+                    <label><input type="radio" name="decision" value="2"> Investigate the IT department to see if they can find any evidence of data leaks or tampering.</label><br>
+                    <label><input type="radio" name="decision" value="3"> Speak with Rasheek, who might have information about the standard's last known whereabouts.</label><br>
+                    <label><input type="radio" name="decision" value="4"> Review the audit reports from the last few months for any inconsistencies or signs of foul play.</label><br>
+                    <label><input type="radio" name="decision" value="5"> Pay a visit to Tarush, the journalist, and see if he has any leads on the missing standard.</label><br><br>
+                    <button type="submit">Submit Decision</button>
+                </form>
+            `;
+
+        return formattedContent + optionsHtml;
+      }
+
+      document.addEventListener("submit", async function (event) {
+        if (event.target && event.target.id === "decisionForm") {
+          event.preventDefault();
+
+          const selectedOption = document.querySelector(
+            'input[name="decision"]:checked'
+          ).value;
+          const decisionMessage = `You chose option ${selectedOption}.`;
+
+          const requestData = {
+            model:
+              "lmstudio-community/Meta-Llama-3.1-8B-Instruct-GGUF/Meta-Llama-3.1-8B-Instruct-Q4_K_M.gguf",
+            messages: [{ role: "user", content: decisionMessage }],
+            temperature: 0.7,
+            max_tokens: -1,
+            stream: false,
+          };
+
+          try {
+            const response = await fetch("/v1/chat/completions", {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify(requestData),
+            });
+
+            const data = await response.json();
+
+            if (response.ok) {
+              const formattedResponse = formatResponse(
+                data.choices[0].message.content
+              );
+              document.getElementById("response").innerHTML = formattedResponse;
+            } else {
+              document.getElementById("response").textContent =
+                "Error: " + data.error;
+            }
+          } catch (error) {
+            document.getElementById("response").textContent =
+              "Error: " + error.message;
+          }
+        }
+      });
+    </script>
+  </body>
+</html>
